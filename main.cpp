@@ -3,6 +3,8 @@ using namespace std;
 
 unordered_map<string , vector<string>>graph;
 
+pair<vector<string> , int>getShortestPath(string start , string end);
+
 bool alreadyFriend(string a , string b){
     for(auto &f : graph[a]){
         if(f == b)return true;
@@ -102,8 +104,63 @@ void suggestFriendSmart(string user){
 
     cout<<"Smart Suggestions :\n";
     for(auto &p : result){
-        cout<<p.first<<" (Mutual : "<<p.second<<" )\n";
+        string suggestuser = p.first;
+
+        auto pathData = getShortestPath(user , suggestuser);
+
+        cout<<suggestuser<<" (Mutual : "<<p.second<<" , Level : "<<pathData.second<<")\n";
+
+        cout<<"Connection : ";
+        for(auto &node : pathData.first){
+            cout<<node<<" ";
+        }
+        cout<<"\n\n";
     }
+}
+
+pair<vector<string> , int>getShortestPath(string start , string end){
+    unordered_map<string , string>parent;
+    unordered_set<string>visited;
+    queue<string>q;
+
+    q.push(start);
+    visited.insert(start);
+
+    bool found = false;
+
+    while(!q.empty()){
+        string curr = q.front();
+        q.pop();
+
+        if(curr == end){
+            found = true;
+            break;
+        }
+
+        for(auto &neighbor : graph[curr]){
+            if(!visited.count(neighbor)){
+                visited.insert(neighbor);
+                parent[neighbor] = curr;
+                q.push(neighbor);
+            }
+        }
+    }
+
+    if(!found)return{{} , -1};
+
+    vector<string>path;
+    string curr = end;
+
+    while(curr != start){
+        path.push_back(curr);
+        curr = parent[curr];
+    }
+
+    path.push_back(start);
+
+    reverse(path.begin() , path.end());
+
+    return{path , (int)path.size() -1};
 }
 
 
