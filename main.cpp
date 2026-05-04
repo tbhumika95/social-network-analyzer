@@ -38,7 +38,11 @@ void addFriend(string a , string b){
 }
 
 void display(){
-    cout<<"Social Network : ";
+    if(graph.empty()){
+    cout<<"No users in network!\n";
+    return;
+    }
+    cout<<"Social Network : \n";
     for(auto &p : graph){
         cout<<p.first<<"->";
         for(auto &f : p.second){
@@ -104,7 +108,8 @@ void suggestFriendSmart(string user){
 
     vector<pair<string,int>>result(mutualCount.begin() , mutualCount.end());
     sort(result.begin() , result.end() ,[](auto &a , auto &b){
-        return a.second > b.second;
+        return a.second > b.second || 
+      (a.second == b.second && a.first < b.first);
     });
 
     cout<<"Smart Suggestions :\n";
@@ -114,9 +119,9 @@ void suggestFriendSmart(string user){
         auto pathData = getShortestPath(user , suggestuser);
 
         cout<<"User : "<<suggestuser<<"\n";
-        cout<<"Mutual Friends :"<<p.second<<"\n";
-        cout<<"Connection Level :"<<pathData.second<<"\n";
-        cout<<"Path :";
+        cout<<"Mutual Friends : "<<p.second<<"\n";
+        cout<<"Connection Level : "<<pathData.second<<"\n";
+        cout<<"Path : ";
         for(auto &node : pathData.first){
             cout<<node<<" ";
         }
@@ -170,13 +175,99 @@ pair<vector<string> , int>getShortestPath(string start , string end){
 }
 
 
+void dfs(string user , unordered_set<string>&visited ,vector<string>&cluster){
+    visited.insert(user);
+    cluster.push_back(user);
+
+    for(auto &neighbor : graph[user]){
+        if(!visited.count(neighbor)){
+            dfs(neighbor , visited , cluster);
+        }
+    }
+}
+
+int getInfluenceScore(string user){
+    unordered_set<string> indirect;
+    unordered_set<string> directSet(graph[user].begin(), graph[user].end());
+
+    int direct = graph[user].size();
+
+    for(auto &f : graph[user]){
+        for(auto &fof : graph[f]){
+            if(fof != user && !directSet.count(fof)){
+                indirect.insert(fof);
+            }
+        }
+    }
+
+    return 2*direct + indirect.size();
+}
+
+
+void findClusters(){
+    if(graph.empty()){
+    cout<<"No users in network!\n";
+    return;
+    }
+    unordered_set<string>visited;
+
+    int globalMax = -1;
+    vector<string> globalUsers;
+
+    cout<<"\n=====Communities=====\n";
+    for(auto &p : graph){
+        string user = p.first;
+
+        if(!visited.count(user)){
+            vector<string>cluster;
+
+            dfs(user , visited , cluster);
+
+            cout<<"\nCluster : ";
+            for(auto &u : cluster){
+                cout<<u<<" ";
+            }
+            cout<<"\n";
+
+            string topUser = "";
+            int maxScore = -1;
+
+            for(auto & u : cluster){
+                int score = getInfluenceScore(u);
+                cout<<"User : "<<u<<" | Influence Score: "<<score<<"\n";
+
+                if(score > maxScore){
+                    maxScore = score;
+                    topUser=u;
+                }
+
+                if(score > globalMax){
+                    globalMax = score;
+                    globalUsers.clear();
+                    globalUsers.push_back(u);
+                }
+                else if(score == globalMax){
+                    globalUsers.push_back(u);
+                }
+            }
+
+            cout<<"Top Influencer : "<<topUser<<"(Score : "<<maxScore<<")\n";
+        }
+    }
+    cout<<"\nGlobal Top Influencer(s): ";
+    for(auto &u : globalUsers){
+        cout<<u<<" ";
+    }
+    cout<<"(Score : "<<globalMax<<")\n";
+}
+
 int main(){
     int choice;
     string u , v;
 
     while(true){
         cout<<"\n=====Social Network Analyzer=====\n";
-        cout<<"1. Add User\n2. Add Friendship\n3. Display Network\n4. Suggest Friends\n5. Smart Suggestion\n6. Exit\n";
+        cout<<"1. Add User\n2. Add Friendship\n3. Display Network\n4. Suggest Friends\n5. Smart Suggestion\n6. Show Community with Influence\n7. Exit\n";
         cout<<"Enter Choice: ";
         cin>>choice;
 
@@ -204,6 +295,9 @@ int main(){
             cout<<"Enter your name :";
             cin>>u;
             suggestFriendSmart(u);
+        }
+        else if(choice == 6){
+            findClusters();
         }
         else break;
     }
