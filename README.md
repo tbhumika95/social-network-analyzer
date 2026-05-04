@@ -1,98 +1,141 @@
 # Social Network Analyzer (DSA Project)
 
-##  Overview
+## Overview
 
-This project simulates a social network using **Graph Data Structure** where:
+This project simulates a social network using **Graph Data Structure**, where:
 
 * Users are represented as nodes
 * Friendships are represented as edges
 
-The system provides intelligent features like friend recommendation and connection analysis using graph algorithms.
+It demonstrates how real-world social platforms can be modeled using graph algorithms to perform **recommendation, connection analysis, and community detection**.
 
 ---
 
-##  Features
+## Features
 
-* Add users to the network
-* Add friendships (undirected graph)
-* Display complete network
-* Friend recommendation (Friends of Friends)
-* Smart recommendation based on **mutual friends**
-* Show connection level and path between users (using BFS)
-
----
-
-##  Data Structures & Algorithms Used
-
-* Graph (Adjacency List using `unordered_map`)
-* BFS (Breadth First Search)
-* HashMap (`unordered_map`)
-* HashSet (`unordered_set`)
-* Sorting (for ranking suggestions)
+* Add users and friendships (Graph-based representation)
+* Display network structure
+* Friend recommendation using **Friends-of-Friends logic**
+* Smart recommendation using **mutual connections + BFS**
+* Connection analysis using **Shortest Path (BFS)**
+* Community detection using **DFS (Connected Components)**
+* Influence score calculation (weighted: direct + indirect connections)
+* Top influencer detection within each community
+* Global influencer detection across the entire network
 
 ---
 
-##  Key Functionalities
+## Data Structures & Algorithms Used
 
-### 1. Friend Recommendation
+* **Graph (Adjacency List)** using `unordered_map`
+* **Breadth First Search (BFS)**
+
+  * Shortest path
+  * Recommendation logic
+* **Depth First Search (DFS)**
+
+  * Community detection
+* **Hashing** (`unordered_map`, `unordered_set`)
+* **Sorting** (ranking recommendations)
+
+---
+
+## Key Functionalities
+
+### 🔹 Friend Recommendation
 
 Suggests users who are not directly connected but share mutual connections.
 
-### 2. Smart Recommendation
+### 🔹 Smart Recommendation
 
-Ranks suggested users based on the number of mutual friends.
+Ranks suggested users based on the number of mutual friends and displays connection details.
 
-### 3. Connection Analysis
+### 🔹 Connection Analysis
 
-Finds the shortest path between two users using BFS and displays:
+Uses BFS to:
 
-* Connection level (degree of separation)
-* Actual connection path
+* Find shortest path between users
+* Show degree of connection
+* Display actual connection path
+
+### 🔹 Community Detection
+
+Uses DFS to identify clusters (connected components) in the network.
+
+### 🔹 Influence Score
+
+Calculates influence using:
+
+* Direct connections (higher weight)
+* Indirect connections (friends of friends)
+
+### 🔹 Top Influencer (Local)
+
+Finds the most influential user within each community.
+
+### 🔹 Global Influencer
+
+Identifies the most influential user across the entire network.
 
 ---
 
-##  Example
+## Example
 
-User A is connected to B and C
-B is connected to D
-C is connected to D and E
+```
+A → B, C  
+B → D  
+C → D, E
+```
 
-Suggestions for A:
+### Suggestions for A:
 
 * D (2 mutual friends)
 * E (1 mutual friend)
 
-Connection Path:
+### Connection Path:
+
+```
 A → B → D
+```
 
 ---
 
-##  How to Run
+## How to Run
 
 1. Compile:
+
+   ```bash
    g++ main.cpp -o main
+   ```
+
 2. Run:
+
+   ```bash
    ./main
+   ```
 
 ---
 
-##  Future Improvements
+## Future Improvements
 
-* Implement friend request system (mutual acceptance)
-* Convert to backend using Java Spring Boot
-* Add database integration (MySQL/MongoDB)
+* Implement friend request system (mutual acceptance model)
+* Introduce weighted graph based on interaction frequency
+* Convert to backend using **Java Spring Boot**
+* Add database integration (MySQL / MongoDB)
 * Build frontend UI (React)
 
 ---
 
-##  Learnings
+## Learnings
 
-* Practical implementation of graph data structures
-* BFS traversal for shortest path problems
-* Designing real-world systems using DSA concepts
+* Practical implementation of graph-based systems
+* BFS for shortest path and recommendation problems
+* DFS for connected component detection
+* Designing scalable, real-world systems using DSA concepts
+* Combining multiple algorithms for system-level features
 
 ---
 
-##  Author
+## Author
 
-Bhumika Tiwari
+**Bhumika Tiwari**
