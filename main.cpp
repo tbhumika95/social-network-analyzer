@@ -18,6 +18,7 @@ void addUser(string user){
         return;
     }
     graph[user] = {};
+    cout<<"Added "<<user<<" successfully !!\n";
 }
 
 void addFriend(string a , string b){
@@ -31,9 +32,13 @@ void addFriend(string a , string b){
     }
     graph[a].push_back(b);
     graph[b].push_back(a);
+
+    cout<<a<<" and "<<b<<" are Friends Now!!\n";
+
 }
 
 void display(){
+    cout<<"Social Network : ";
     for(auto &p : graph){
         cout<<p.first<<"->";
         for(auto &f : p.second){
@@ -67,7 +72,7 @@ void suggestFriends(string user){
 
     cout<<"Friend Suggestions :\n";
     for(auto &s : suggestion){
-        cout<<s<<endl;
+        cout<<"User: "<<s<<endl;
     }
 }
 
@@ -108,9 +113,10 @@ void suggestFriendSmart(string user){
 
         auto pathData = getShortestPath(user , suggestuser);
 
-        cout<<suggestuser<<" (Mutual : "<<p.second<<" , Level : "<<pathData.second<<")\n";
-
-        cout<<"Connection : ";
+        cout<<"User : "<<suggestuser<<"\n";
+        cout<<"Mutual Friends :"<<p.second<<"\n";
+        cout<<"Connection Level :"<<pathData.second<<"\n";
+        cout<<"Path :";
         for(auto &node : pathData.first){
             cout<<node<<" ";
         }
@@ -169,25 +175,33 @@ int main(){
     string u , v;
 
     while(true){
-        cout<<"\n1. Add User\n2. Add Friend\n3. Display\n4. Suggest Friends\n5. Smart Suggestion\n6. Exit\n";
+        cout<<"\n=====Social Network Analyzer=====\n";
+        cout<<"1. Add User\n2. Add Friendship\n3. Display Network\n4. Suggest Friends\n5. Smart Suggestion\n6. Exit\n";
+        cout<<"Enter Choice: ";
         cin>>choice;
 
         if(choice == 1){
+            cout<<"Enter User : ";
             cin>>u;
             addUser(u);
         }
         else if(choice == 2){
-            cin>>u>>v;
+            cout<<"Enter First User : ";
+            cin>>u;
+            cout<<"Enter Second User : ";
+            cin>>v;
             addFriend(u , v);
         }
         else if(choice == 3){
             display();
         }
         else if(choice == 4){
+            cout<<"Enter your name :";
             cin>>u;
             suggestFriends(u);
         }
         else if(choice == 5){
+            cout<<"Enter your name :";
             cin>>u;
             suggestFriendSmart(u);
         }
