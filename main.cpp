@@ -41,6 +41,70 @@ void display(){
     }
 }
 
+void suggestFriends(string user){
+    if(graph.find(user) == graph.end()){
+        cout<<"User does not Exists!"<<endl;
+        return;
+    }
+
+    unordered_set<string> visited;
+    unordered_set<string> suggestion;
+
+    visited.insert(user);
+    for(auto &f : graph[user]){
+        visited.insert(f);
+    }
+
+    for(auto &f : graph[user]){
+        for(auto &fof : graph[f]){
+            if(!visited.count(fof)){
+                suggestion.insert(fof);
+            }
+        }
+    }
+
+    cout<<"Friend Suggestions :\n";
+    for(auto &s : suggestion){
+        cout<<s<<endl;
+    }
+}
+
+void suggestFriendSmart(string user){
+    if(graph.find(user) == graph.end()){
+        cout<<"Invalid User!\n";
+        return;
+    }
+
+    unordered_set<string> directFriends ;
+    unordered_map<string , int> mutualCount;
+
+    for(auto &f : graph[user]){
+        directFriends.insert(f);
+    }
+
+    for(auto &f : graph[user]){
+        for(auto &fof : graph[f]){
+            if(fof != user && !directFriends.count(fof)){
+                mutualCount[fof]++;
+            }
+        }
+    }
+
+    if(mutualCount.empty()){
+        cout<<"No Smart Suggestions Available!";
+        return;
+    }
+
+    vector<pair<string,int>>result(mutualCount.begin() , mutualCount.end());
+    sort(result.begin() , result.end() ,[](auto &a , auto &b){
+        return a.second > b.second;
+    });
+
+    cout<<"Smart Suggestions :\n";
+    for(auto &p : result){
+        cout<<p.first<<" (Mutual : "<<p.second<<" )\n";
+    }
+}
 
 
 int main(){
@@ -48,7 +112,7 @@ int main(){
     string u , v;
 
     while(true){
-        cout<<"\n1. Add User\n2. Add Friend\n3. Display\n4. Exit\n";
+        cout<<"\n1. Add User\n2. Add Friend\n3. Display\n4. Suggest Friends\n5. Smart Suggestion\n6. Exit\n";
         cin>>choice;
 
         if(choice == 1){
@@ -61,6 +125,14 @@ int main(){
         }
         else if(choice == 3){
             display();
+        }
+        else if(choice == 4){
+            cin>>u;
+            suggestFriends(u);
+        }
+        else if(choice == 5){
+            cin>>u;
+            suggestFriendSmart(u);
         }
         else break;
     }
